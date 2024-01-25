@@ -1,0 +1,17 @@
+sbatch slurm.slurm
+squeue -u kl5sq
+
+/u/kl5sq/.conda/envs/sparse/lib/python3.9/site-packages/transformers/utils/hub.py:124: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+Traceback (most recent call last):
+  File "/u/kl5sq/nlp-project/1L-Sparse-Autoencoder/train.py", line 5, in <module>
+    buffer = Buffer(cfg)
+  File "/u/kl5sq/nlp-project/1L-Sparse-Autoencoder/utils.py", line 237, in __init__
+    self.refresh()
+  File "/u/kl5sq/.conda/envs/sparse/lib/python3.9/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "/u/kl5sq/nlp-project/1L-Sparse-Autoencoder/utils.py", line 242, in refresh
+    with torch.autocast("cuda", torch.bfloat16):
+  File "/u/kl5sq/.conda/envs/sparse/lib/python3.9/site-packages/torch/amp/autocast_mode.py", line 305, in __init__
+    raise RuntimeError(
+RuntimeError: Current CUDA Device does not support bfloat16. Please switch dtype to float16.

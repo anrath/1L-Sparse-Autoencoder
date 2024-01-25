@@ -1,7 +1,7 @@
 # %%
 import os
-os.environ["TRANSFORMERS_CACHE"] = "/workspace/cache/"
-os.environ["DATASETS_CACHE"] = "/workspace/cache/"
+os.environ["TRANSFORMERS_CACHE"] = "/bigtemp/kl5sq/cache/"
+os.environ["DATASETS_CACHE"] = "/bigtemp/kl5sq/cache/"
 # %%
 from neel.imports import *
 from neel_plotly import *
@@ -85,7 +85,7 @@ def get_mlp_acts(tokens, batch_size=1024):
 # sub, acts = get_mlp_acts(torch.arange(20).reshape(2, 10), batch_size=3)
 # sub.shape, acts.shape
 # %%
-SAVE_DIR = Path("/workspace/1L-Sparse-Autoencoder/checkpoints")
+SAVE_DIR = Path("/bigtemp/kl5sq/1L-Sparse-Autoencoder/checkpoints")
 class AutoEncoder(nn.Module):
     def __init__(self, cfg):
         super().__init__()
@@ -162,7 +162,7 @@ class AutoEncoder(nn.Module):
 # dataset = load_dataset("json", data_files=c4_urls, split="train")
 
 # dataset_name="c4"
-# dataset.save_to_disk(f"/workspace/data/{dataset_name}_text.hf")
+# dataset.save_to_disk(f"/bigtemp/kl5sq/data/{dataset_name}_text.hf")
 # # %%
 # print(dataset)
 
@@ -171,7 +171,7 @@ class AutoEncoder(nn.Module):
 # tokenizer = model.tokenizer
 
 # tokens = tokenize_and_concatenate(dataset, tokenizer, streaming=False, num_proc=20, max_length=128)
-# tokens.save_to_disk(f"/workspace/data/{dataset_name}_tokens.hf")
+# tokens.save_to_disk(f"/bigtemp/kl5sq/data/{dataset_name}_tokens.hf")
 # %%
 def shuffle_data(all_tokens):
     print("Shuffled data")
@@ -180,7 +180,7 @@ def shuffle_data(all_tokens):
 loading_data_first_time = False
 if loading_data_first_time:
     data = load_dataset("NeelNanda/c4-code-tokenized-2b", split="train")
-    data.save_to_disk("/workspace/data/c4_code_tokenized_2b.hf")
+    data.save_to_disk("/bigtemp/kl5sq/data/c4_code_tokenized_2b.hf")
     data.set_format(type="torch", columns=["tokens"])
     all_tokens = data["tokens"]
     all_tokens.shape
@@ -189,10 +189,10 @@ if loading_data_first_time:
     all_tokens_reshaped = einops.rearrange(all_tokens, "batch (x seq_len) -> (batch x) seq_len", x=8, seq_len=128)
     all_tokens_reshaped[:, 0] = model.tokenizer.bos_token_id
     all_tokens_reshaped = all_tokens_reshaped[torch.randperm(all_tokens_reshaped.shape[0])]
-    torch.save(all_tokens_reshaped, "/workspace/data/c4_code_2b_tokens_reshaped.pt")
+    torch.save(all_tokens_reshaped, "/bigtemp/kl5sq/data/c4_code_2b_tokens_reshaped.pt")
 else:
-    # data = datasets.load_from_disk("/workspace/data/c4_code_tokenized_2b.hf")
-    all_tokens = torch.load("/workspace/data/c4_code_2b_tokens_reshaped.pt")
+    # data = datasets.load_from_disk("/bigtemp/kl5sq/data/c4_code_tokenized_2b.hf")
+    all_tokens = torch.load("/bigtemp/kl5sq/data/c4_code_2b_tokens_reshaped.pt")
     all_tokens = shuffle_data(all_tokens)
 
 # %%
@@ -310,7 +310,7 @@ def re_init(indices, encoder):
 # %%
 encoder = AutoEncoder(cfg)
 buffer = Buffer(cfg)
-evil_dir = torch.load("/workspace/1L-Sparse-Autoencoder/evil_dir.pt")
+evil_dir = torch.load("/bigtemp/kl5sq/1L-Sparse-Autoencoder/evil_dir.pt")
 evil_dir.requires_grad = False
 # %%
 try:
@@ -652,7 +652,7 @@ def upload_folder_to_hf(folder_path, repo_name=None, debug=False):
             print(file.name)
         file.rename(repo_folder / file.name)
     push_to_hub(repo.local_dir)
-upload_folder_to_hf("/workspace/1L-Sparse-Autoencoder/checkpoints_copy_2", "sparse_autoencoder", True)
+upload_folder_to_hf("/bigtemp/kl5sq/1L-Sparse-Autoencoder/checkpoints_copy_2", "sparse_autoencoder", True)
 # %%
 freqs = (hidden_acts>0).float().mean(0)
 feature_df = pd.DataFrame({"freqs": to_numpy(freqs), "log_freq":to_numpy((freqs).log10())})

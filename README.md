@@ -16,7 +16,7 @@ This is a pretty scrappy training codebase, and won't run from the top. I mostly
 Setup Notes:
 
 * Create data - you'll need to set the flag loading_data_first_time to True in utils.py , note that this downloads the training mix of gelu-1l and if using eg the Pythia models you'll need different data (I recommend https://huggingface.co/datasets/monology/pile-uncopyrighted )
-* A bunch of folders are hard coded to be /workspace/..., change this for your system.
-* Create a checkpoints dir in /workspace/1L-Sparse-Autoencoder/checkpoints
+* A bunch of folders are hard coded to be /bigtemp/kl5sq/..., change this for your system.
+* Create a checkpoints dir in /bigtemp/kl5sq/1L-Sparse-Autoencoder/checkpoints
 
 * If you train an autoencoder and want to share the weights, copy the final checkpoints to a new folder, use upload_folder_to_hf to upload to HuggingFace, create your own repo. Run huggingface-cli login to login, and apt-get install git-lfs and then git lfs install

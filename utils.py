@@ -1,11 +1,26 @@
 # %%
 import os
-os.environ["TRANSFORMERS_CACHE"] = "/workspace/cache/"
-os.environ["DATASETS_CACHE"] = "/workspace/cache/"
+os.environ["TRANSFORMERS_CACHE"] = "/bigtemp/kl5sq/cache/"
+os.environ["DATASETS_CACHE"] = "/bigtemp/kl5sq/cache/"
 # %%
-from neel.imports import *
-from neel_plotly import *
+# from neel.imports import *
+# from neel_plotly import *
+import torch
+from torch import nn
+import torch.nn.functional as F
+import datasets
+from datasets import load_dataset
+import json
 import wandb
+from IPython import get_ipython
+import numpy as np
+import random
+from transformer_lens import *
+from pathlib import Path
+import pprint
+from functools import partial
+import tqdm
+import einops 
 # %%
 import argparse
 def arg_parse_update_cfg(default_cfg):
@@ -77,7 +92,7 @@ pprint.pprint(cfg)
 
 SEED = cfg["seed"]
 GENERATOR = torch.manual_seed(SEED)
-DTYPES = {"fp32": torch.float32, "fp16": torch.float16, "bf16": torch.bfloat16}
+DTYPES = {"fp32": torch.float32, "fp16": torch.float16, "bf16": torch.float16}
 np.random.seed(SEED)
 random.seed(SEED)
 torch.set_grad_enabled(True)
@@ -102,7 +117,7 @@ def get_acts(tokens, batch_size=1024):
 # sub, acts = get_acts(torch.arange(20).reshape(2, 10), batch_size=3)
 # sub.shape, acts.shape
 # %%
-SAVE_DIR = Path("/workspace/1L-Sparse-Autoencoder/checkpoints")
+SAVE_DIR = Path("/bigtemp/kl5sq/1L-Sparse-Autoencoder/checkpoints")
 class AutoEncoder(nn.Module):
     def __init__(self, cfg):
         super().__init__()
@@ -193,8 +208,9 @@ def shuffle_data(all_tokens):
 
 loading_data_first_time = False
 if loading_data_first_time:
-    data = load_dataset("NeelNanda/c4-code-tokenized-2b", split="train", cache_dir="/workspace/cache/")
-    data.save_to_disk("/workspace/data/c4_code_tokenized_2b.hf")
+    data = load_dataset("NeelNanda/c4-code-tokenized-2b", split="train", cache_dir="/bigtemp/kl5sq/cache/")
+    data.save_to_disk("/bigtemp/kl5sq/data/c4_code_tokenized_2b.hf")
+    # data = datasets.load_from_disk("/bigtemp/kl5sq/data/c4_code_tokenized_2b.hf")
     data.set_format(type="torch", columns=["tokens"])
     all_tokens = data["tokens"]
     all_tokens.shape
@@ -203,10 +219,9 @@ if loading_data_first_time:
     all_tokens_reshaped = einops.rearrange(all_tokens, "batch (x seq_len) -> (batch x) seq_len", x=8, seq_len=128)
     all_tokens_reshaped[:, 0] = model.tokenizer.bos_token_id
     all_tokens_reshaped = all_tokens_reshaped[torch.randperm(all_tokens_reshaped.shape[0])]
-    torch.save(all_tokens_reshaped, "/workspace/data/c4_code_2b_tokens_reshaped.pt")
+    torch.save(all_tokens_reshaped, "/bigtemp/kl5sq/data/c4_code_2b_tokens_reshaped.pt")
 else:
-    # data = datasets.load_from_disk("/workspace/data/c4_code_tokenized_2b.hf")
-    all_tokens = torch.load("/workspace/data/c4_code_2b_tokens_reshaped.pt")
+    all_tokens = torch.load("/bigtemp/kl5sq/data/c4_code_2b_tokens_reshaped.pt")
     all_tokens = shuffle_data(all_tokens)
 
 # %%
@@ -215,7 +230,7 @@ class Buffer():
     This defines a data buffer, to store a bunch of MLP acts that can be used to train the autoencoder. It'll automatically run the model to generate more when it gets halfway empty. 
     """
     def __init__(self, cfg):
-        self.buffer = torch.zeros((cfg["buffer_size"], cfg["act_size"]), dtype=torch.bfloat16, requires_grad=False).to(cfg["device"])
+        self.buffer = torch.zeros((cfg["buffer_size"], cfg["act_size"]), dtype=torch.float16, requires_grad=False).to(cfg["device"])
         self.cfg = cfg
         self.token_pointer = 0
         self.first = True
@@ -224,7 +239,7 @@ class Buffer():
     @torch.no_grad()
     def refresh(self):
         self.pointer = 0
-        with torch.autocast("cuda", torch.bfloat16):
+        with torch.autocast("cuda", torch.float16):
             if self.first:
                 num_batches = self.cfg["buffer_batches"]
             else:

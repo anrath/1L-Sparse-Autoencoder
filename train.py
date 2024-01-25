@@ -5,9 +5,9 @@ encoder = AutoEncoder(cfg)
 buffer = Buffer(cfg)
 # Code used to remove the "rare freq direction", the shared direction among the ultra low frequency features. 
 # I experimented with removing it and retraining the autoencoder. 
-if cfg["remove_rare_dir"]:
-    rare_freq_dir = torch.load("rare_freq_dir.pt")
-    rare_freq_dir.requires_grad = False
+# if cfg["remove_rare_dir"]:
+#     rare_freq_dir = torch.load("rare_freq_dir.pt")
+#     rare_freq_dir.requires_grad = False
 
 # %%
 try:

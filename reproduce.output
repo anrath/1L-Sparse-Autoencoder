@@ -1,0 +1,46 @@
+Updated config
+{
+  "seed": 49,
+  "batch_size": 4096,
+  "buffer_mult": 384,
+  "lr": 0.0001,
+  "num_tokens": 2000000000,
+  "l1_coeff": 0.0003,
+  "beta1": 0.9,
+  "beta2": 0.99,
+  "dict_mult": 32,
+  "seq_len": 128,
+  "enc_dtype": "fp32",
+  "remove_rare_dir": false,
+  "model_name": "gelu-2l",
+  "site": "mlp_out",
+  "layer": 0,
+  "device": "cuda:0"
+}
+{'act_name': 'blocks.0.hook_mlp_out',
+ 'act_size': 512,
+ 'batch_size': 4096,
+ 'beta1': 0.9,
+ 'beta2': 0.99,
+ 'buffer_batches': 12288,
+ 'buffer_mult': 384,
+ 'buffer_size': 1572864,
+ 'device': 'cuda:0',
+ 'dict_mult': 32,
+ 'dict_size': 16384,
+ 'enc_dtype': 'fp32',
+ 'l1_coeff': 0.0003,
+ 'layer': 0,
+ 'lr': 0.0001,
+ 'model_batch_size': 512,
+ 'model_name': 'gelu-2l',
+ 'name': 'gelu-2l_0_16384_mlp_out',
+ 'num_tokens': 2000000000,
+ 'remove_rare_dir': False,
+ 'seed': 49,
+ 'seq_len': 128,
+ 'site': 'mlp_out'}
+Loaded pretrained model gelu-2l into HookedTransformer
+Changing model dtype to torch.float32
+Moving model to device:  cuda:0
+Shuffled data
