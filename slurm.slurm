@@ -9,10 +9,10 @@
 #SBATCH --job-name="reproduce Job"
 #SBATCH --error="reproduce.err"
 #SBATCH --output="reproduce.output"
-# --- specify the partition (queue) name
-#SBATCH --partition="gpu"
-#SBATCH --gres=gpu:2
-#SBATCH --mem-per-gpu=16G
+# --- specify the partition (queue) name;;; gpu  --partition="serval01"
+#SBATCH -p gpu
+#SBATCH --gres=gpu:nvidia_a100-pcie-40gb:2
+# 
 #source /etc/profile.d/modules.sh
 #module load python3
 #source sparse/bin/activate

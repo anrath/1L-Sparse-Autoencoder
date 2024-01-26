@@ -11,7 +11,7 @@ import torch.nn.functional as F
 import datasets
 from datasets import load_dataset
 import json
-import wandb
+# import wandb
 from IPython import get_ipython
 import numpy as np
 import random
@@ -92,7 +92,8 @@ pprint.pprint(cfg)
 
 SEED = cfg["seed"]
 GENERATOR = torch.manual_seed(SEED)
-DTYPES = {"fp32": torch.float32, "fp16": torch.float16, "bf16": torch.float16}
+# DTYPES = {"fp32": torch.float32, "fp16": torch.float16, "bf16": torch.float16}
+DTYPES = {"fp32": torch.float32, "fp16": torch.float16, "bf16": torch.bfloat16}
 np.random.seed(SEED)
 random.seed(SEED)
 torch.set_grad_enabled(True)
@@ -117,7 +118,7 @@ def get_acts(tokens, batch_size=1024):
 # sub, acts = get_acts(torch.arange(20).reshape(2, 10), batch_size=3)
 # sub.shape, acts.shape
 # %%
-SAVE_DIR = Path("/bigtemp/kl5sq/1L-Sparse-Autoencoder/checkpoints")
+SAVE_DIR = Path("/bigtemp/kl5sq/checkpoints")
 class AutoEncoder(nn.Module):
     def __init__(self, cfg):
         super().__init__()
@@ -230,7 +231,8 @@ class Buffer():
     This defines a data buffer, to store a bunch of MLP acts that can be used to train the autoencoder. It'll automatically run the model to generate more when it gets halfway empty. 
     """
     def __init__(self, cfg):
-        self.buffer = torch.zeros((cfg["buffer_size"], cfg["act_size"]), dtype=torch.float16, requires_grad=False).to(cfg["device"])
+        self.buffer = torch.zeros((cfg["buffer_size"], cfg["act_size"]), dtype=torch.bfloat16, requires_grad=False).to(cfg["device"])
+        # self.buffer = torch.zeros((cfg["buffer_size"], cfg["act_size"]), dtype=torch.float16, requires_grad=False).to(cfg["device"])
         self.cfg = cfg
         self.token_pointer = 0
         self.first = True
@@ -239,7 +241,8 @@ class Buffer():
     @torch.no_grad()
     def refresh(self):
         self.pointer = 0
-        with torch.autocast("cuda", torch.float16):
+        with torch.autocast("cuda", torch.bfloat16):
+        # with torch.autocast("cuda", torch.float16):
             if self.first:
                 num_batches = self.cfg["buffer_batches"]
             else:

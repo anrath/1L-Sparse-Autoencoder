@@ -11,7 +11,7 @@ buffer = Buffer(cfg)
 
 # %%
 try:
-    wandb.init(project="autoencoder", entity="neelnanda-io")
+    # wandb.init(project="autoencoder", entity="neelnanda-io")
     num_batches = cfg["num_tokens"] // cfg["batch_size"]
     # model_num_batches = cfg["model_batch_size"] * num_batches
     encoder_optim = torch.optim.Adam(encoder.parameters(), lr=cfg["lr"], betas=(cfg["beta1"], cfg["beta2"]))
@@ -28,7 +28,7 @@ try:
         loss_dict = {"loss": loss.item(), "l2_loss": l2_loss.item(), "l1_loss": l1_loss.item()}
         del loss, x_reconstruct, mid_acts, l2_loss, l1_loss, acts
         if (i) % 100 == 0:
-            wandb.log(loss_dict)
+            # wandb.log(loss_dict)
             print(loss_dict)
         if (i) % 1000 == 0:
             x = (get_recons_loss(local_encoder=encoder))
@@ -37,7 +37,13 @@ try:
             freqs = get_freqs(5, local_encoder=encoder)
             act_freq_scores_list.append(freqs)
             # histogram(freqs.log10(), marginal="box", histnorm="percent", title="Frequencies")
-            wandb.log({
+            # wandb.log({
+            #     "recons_score": x[0],
+            #     "dead": (freqs==0).float().mean().item(),
+            #     "below_1e-6": (freqs<1e-6).float().mean().item(),
+            #     "below_1e-5": (freqs<1e-5).float().mean().item(),
+            # })
+            print({
                 "recons_score": x[0],
                 "dead": (freqs==0).float().mean().item(),
                 "below_1e-6": (freqs<1e-6).float().mean().item(),
@@ -45,7 +51,7 @@ try:
             })
         if (i+1) % 30000 == 0:
             encoder.save()
-            wandb.log({"reset_neurons": 0.0})
+            # wandb.log({"reset_neurons": 0.0})
             freqs = get_freqs(50, local_encoder=encoder)
             to_be_reset = (freqs<10**(-5.5))
             print("Resetting neurons!", to_be_reset.sum())

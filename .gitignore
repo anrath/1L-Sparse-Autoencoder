@@ -1,2 +1,3 @@
 wandb/*
 c4_code_2b_tokens_reshaped.pt
+__pycache__/*
