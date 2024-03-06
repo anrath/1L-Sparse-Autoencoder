@@ -53,29 +53,37 @@ def arg_parse_update_cfg(default_cfg):
     return cfg
 default_cfg = {
     "seed": 49,
-    "batch_size": 4096,
+    "batch_size": 512,
     "buffer_mult": 384,
     "lr": 1e-4,
     "num_tokens": int(2e9),
     "l1_coeff": 3e-4,
     "beta1": 0.9,
     "beta2": 0.99,
-    "dict_mult": 32,
+    "dict_mult": 256,
     "seq_len": 128,
     "enc_dtype":"fp32",
     "remove_rare_dir": False,
-    "model_name": "bert-base-cased",
+    "model_name": "distillgpt2",
     "site": "mlp_out",
     "layer": 0,
     "device": "cuda:0"
 }
 site_to_size = {
-    "mlp_out": 512,
-    "post": 2048,
-    "resid_pre": 512,
-    "resid_mid": 512,
-    "resid_post": 512,
+    "mlp_out": 768,
+    "post": 3072,
+    "resid_pre": 768,
+    "resid_mid": 768,
+    "resid_post": 768,
 }
+# gelu-2l
+# site_to_size = {
+#     "mlp_out": 512,
+#     "post": 2048,
+#     "resid_pre": 512,
+#     "resid_mid": 512,
+#     "resid_post": 512,
+# }
 
 cfg = arg_parse_update_cfg(default_cfg)
 def post_init_cfg(cfg):
@@ -92,13 +100,13 @@ pprint.pprint(cfg)
 
 SEED = cfg["seed"]
 GENERATOR = torch.manual_seed(SEED)
-# DTYPES = {"fp32": torch.float32, "fp16": torch.float16, "bf16": torch.float16}
 DTYPES = {"fp32": torch.float32, "fp16": torch.float16, "bf16": torch.bfloat16}
 np.random.seed(SEED)
 random.seed(SEED)
 torch.set_grad_enabled(True)
 
 model = HookedTransformer.from_pretrained(cfg["model_name"]).to(DTYPES[cfg["enc_dtype"]]).to(cfg["device"])
+# model = HookedEncoder.from_pretrained(cfg["model_name"]).to(DTYPES[cfg["enc_dtype"]]).to(cfg["device"])
 
 n_layers = model.cfg.n_layers
 d_model = model.cfg.d_model
