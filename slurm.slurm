@@ -5,7 +5,8 @@
 #
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=kl5sq@virginia.edu
-#
+# --- sinfo -o "%40N  %10c  %20m  %40G "
+# --- squeue -w cheetah04
 #SBATCH --job-name="reproduce Job"
 #SBATCH --error="reproduce.err"
 #SBATCH --output="reproduce.output"
@@ -18,3 +19,5 @@
 #source sparse/bin/activate
 cd /u/kl5sq/nlp-project/1L-Sparse-Autoencoder
 python3 train.py
+
+nvidia_h100_80gb_hbm3
