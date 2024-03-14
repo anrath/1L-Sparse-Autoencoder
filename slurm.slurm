@@ -19,5 +19,3 @@
 #source sparse/bin/activate
 cd /u/kl5sq/nlp-project/1L-Sparse-Autoencoder
 python3 train.py
-
-nvidia_h100_80gb_hbm3

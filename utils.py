@@ -53,20 +53,20 @@ def arg_parse_update_cfg(default_cfg):
     return cfg
 default_cfg = {
     "seed": 49,
-    "batch_size": 512,
+    "batch_size": 1024,
     "buffer_mult": 384,
     "lr": 1e-4,
-    "num_tokens": int(2e9),
+    "num_tokens": int(6e9),
     "l1_coeff": 3e-4,
     "beta1": 0.9,
     "beta2": 0.99,
-    "dict_mult": 256,
+    "dict_mult": 32,
     "seq_len": 128,
     "enc_dtype":"fp32",
     "remove_rare_dir": False,
     "model_name": "distillgpt2",
     "site": "mlp_out",
-    "layer": 0,
+    "layer": 5,
     "device": "cuda:0"
 }
 site_to_size = {
