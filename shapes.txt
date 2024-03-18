@@ -1,0 +1,15 @@
+mlp_post.shape
+    torch.Size([128, 128, 768])
+mlp_post.mean([0, 1]).shape
+    torch.Size([768])
+encoder(mlp_post)[1].shape
+    torch.Size([128, 128, 768])
+
+
+
+mlp_post.shape
+    torch.Size([512, 128, 512])
+mlp_post.mean([0, 1]).shape
+    torch.Size([512])
+encoder(mlp_post)[1].shape
+    torch.Size([512, 128, 512])

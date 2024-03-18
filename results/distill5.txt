@@ -1,0 +1,33 @@
+Updated config
+{
+  "seed": 49,
+  "batch_size": 4096,
+  "buffer_mult": 384,
+  "lr": 0.0001,
+  "num_tokens": 2000000000,
+  "l1_coeff": 0.0003,
+  "beta1": 0.9,
+  "beta2": 0.99,
+  "dict_mult": 32,
+  "seq_len": 128,
+  "enc_dtype": "fp32",
+  "remove_rare_dir": false,
+  "model_name": "bert-base-cased",
+  "site": "mlp_out",
+  "layer": 0,
+  "device": "cuda:0",
+  "normalization_type": "LN"
+}
+Loaded pretrained model distillgpt2 into HookedTransformer
+blocks.5.attn.W_Q torch.Size([12, 768, 64])
+blocks.5.attn.W_O torch.Size([12, 64, 768])
+blocks.5.attn.b_Q torch.Size([12, 64])
+blocks.5.attn.b_O torch.Size([768])
+blocks.5.attn.W_K torch.Size([12, 768, 64])
+blocks.5.attn.W_V torch.Size([12, 768, 64])
+blocks.5.attn.b_K torch.Size([12, 64])
+blocks.5.attn.b_V torch.Size([12, 64])
+blocks.5.mlp.W_in torch.Size([768, 3072])
+blocks.5.mlp.b_in torch.Size([3072])
+blocks.5.mlp.W_out torch.Size([3072, 768])
+blocks.5.mlp.b_out torch.Size([768])

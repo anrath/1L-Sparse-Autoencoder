@@ -108,5 +108,5 @@ model = HookedTransformer.from_pretrained("distillgpt2")
 # .to(DTYPES[cfg["enc_dtype"]]).to(cfg["device"])
 
 for name, param in model.named_parameters():
-    if name.startswith("blocks.0."):
+    if name.startswith("blocks.5."):
         print(name, param.shape)
